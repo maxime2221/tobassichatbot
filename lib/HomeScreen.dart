@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'screen/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -8,16 +11,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   final TextEditingController _textController = TextEditingController();
-  bool _isButtonVisible = false;
-  bool _showMoreButtons = false;
+  bool _isButtonVisible = false; //pour le bouton Plus....
+  bool _showMoreButtons = false; // afficher d autres questions possibles
+  bool _isDarkMode = false; // État pour le mode sombre
 
   void _updateTextField(String text) {
     setState(() {
       _textController.text = text;
     });
   }
-  
-  
+
   @override
   void initState() {
     super.initState();
@@ -37,43 +40,88 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: _isDarkMode? Colors.black:Colors.white,
       appBar: AppBar(
+        iconTheme: IconThemeData(color: _isDarkMode? Colors.white:Colors.black),
         centerTitle: true,
-        backgroundColor: Colors.black,
+        backgroundColor: _isDarkMode? Colors.black:Colors.white,
         title: const Text(
           'TobassiChatBot',
           style: TextStyle(
-            color: Colors.red,
+            color:Colors.red,
             fontSize: 20,
             fontWeight: FontWeight.bold,
             ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
+              icon: Icon(_isDarkMode ? Icons.dark_mode : Icons.light_mode),
+              onPressed: () {
+                setState(() {
+                  _isDarkMode = !_isDarkMode; // Basculer entre clair et sombre
+                });
+              },
+            ),
+          IconButton(
+            icon: Icon(Icons.more_vert, color:_isDarkMode? Colors.white:Colors.black),
             onPressed: () {},
           ),
         ],
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.white),
-          onPressed: () {},
-        ),
+        
       ),
       drawer: Drawer(
-        backgroundColor: Colors.black,
+        backgroundColor:_isDarkMode? Colors.black:Colors.white,       
         child: ListView(
           children: [
             DrawerHeader(
+              padding: EdgeInsets.only(top: 30,left: 12),
               decoration: BoxDecoration(
-                border: Border.all()
+              color:_isDarkMode? Colors.black: Colors.white,
               ),
-               child: Text('Menu'),
+               child: Text(
+                'Menu',
+                style:TextStyle(
+                   color: _isDarkMode? Colors.white: Colors.black,
+                   fontWeight: FontWeight.bold,
+                   fontSize: 34,
+                ) ,),
             ),
             ListTile(
-              leading: Icon(Icons.close),
-              title: Text('Quittez'),
-              onTap: (){},
+              leading: Icon(Icons.account_circle,color:Colors.red),
+              title: Text(
+                'Profil',
+                style: TextStyle(
+                  color: _isDarkMode? Colors.white: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),               
+              ),
+              subtitle:Text(
+                "Verifier les etats de vos commandes",
+                style: TextStyle(
+                  color: _isDarkMode? Colors.white: Colors.black,                 
+                ),
+              ),
+              trailing:Icon(Icons.chevron_right),
+              onTap: (){
+                 Navigator.push(
+                   context,
+                   MaterialPageRoute(builder: (context) => ProfileScreen( isDarkMode: _isDarkMode)),                 
+                 );
+              },
+              
+            ),
+            ListTile(
+              leading: Icon(Icons.close_outlined,color:Colors.red),
+              title: Text(
+                'Quittez',
+                style: TextStyle(
+                  color: _isDarkMode? Colors.white: Colors.black,
+                  fontWeight: FontWeight.bold,
+              ),
+              ),
+              onTap: (){
+                SystemNavigator.pop();
+              },
             )
           ],
         ),      
@@ -89,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   'Comment puis-je vous aider ?',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: _isDarkMode? Colors.white:Colors.black,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                      ),               
@@ -107,13 +155,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildButton(Icons.auto_awesome, "M’étonner"),
                     SizedBox(width: 10),
                      if (!_showMoreButtons)
-                     ElevatedButton.icon(
+                      ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black54,
-                          foregroundColor: Colors.white,
+                          backgroundColor: _isDarkMode? Colors.black54 : Colors.white54,
+                          foregroundColor: _isDarkMode? Colors.white: Colors.black45,
                           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                         ),
                         onPressed: () {
@@ -121,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             _showMoreButtons = true; // Afficher ou cacher les boutons
                           });
                         },
-                        icon: Icon(Icons.more_horiz, color: Colors.white),
+                        icon: Icon(Icons.more_horiz, color: Colors.red),
                         label: Text(
                           "Plus",
                           style: TextStyle(
@@ -131,30 +178,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       )
                   ],
                 ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  const SizedBox(height: 10),              
                       if (_showMoreButtons) ...[
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             _buildButton(Icons.auto_awesome, "M’étonner"),
-                             SizedBox(height: 10),
+                             SizedBox(width: 10),
                             _buildButton(Icons.star, "Favoris"),
                           ],
-                        ),                       
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                           _buildButton(Icons.share, "Partager"),
-                          ],
-                        ),                       
-                      ]
-                  ],
-                  )
+                        ),                                             
+                      ]                
               ],
             ),
           ),
@@ -168,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     cursorColor:  Colors.red,                  
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: const Color.fromARGB(255, 48, 40, 40),
+                      fillColor: _isDarkMode? Color.fromARGB(255, 48, 40, 40): Colors.grey,
                       hintText: 'Message.....',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
@@ -176,17 +211,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     style: TextStyle(
-                      color: Colors.white, // Couleur du texte
-                      fontSize: 16, // Taille de la police (facultatif)
+                      color: _isDarkMode? Colors.white: Colors.black, // Couleur du texte
+                      fontSize: 16.4, // Taille de la police (facultatif)
                     ),
                   ),
                 ),
                 SizedBox(width: 10),
                  if (_isButtonVisible)
                 CircleAvatar(
-                  backgroundColor: Colors.red,
+                  backgroundColor:_isDarkMode? Colors.white: Colors.black,
+                  foregroundColor: Colors.black54,
                   child: IconButton(
-                    icon: Icon(Icons.send, color: Colors.white),
+                    icon: Icon(Icons.send, color: _isDarkMode? Colors.black:Colors.white),
                     onPressed: () {},
                   ),
                 ),
@@ -200,17 +236,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildButton(IconData icon, String text) {
+    
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black54,
-        foregroundColor: Colors.white,
+        backgroundColor: _isDarkMode? Colors.black54 : Colors.white54,
+        foregroundColor: _isDarkMode? Colors.white: Colors.black45,
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       ),
       onPressed: () {
         _updateTextField(text);
       },
       icon: Icon(icon,color: Colors.red,),
-      label: Text(text),
+      label: Text(text,
+      style: TextStyle(
+          fontWeight: FontWeight.bold,
+     ),),
     );
   }
 }
