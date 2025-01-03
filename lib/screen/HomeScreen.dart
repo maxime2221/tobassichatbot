@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tobassichatbot/screen/ChatScreen.dart';
 
-import 'screen/profile_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  bool isDarkMode;
+
+  HomeScreen({required this.isDarkMode});
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -11,9 +15,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   final TextEditingController _textController = TextEditingController();
-  bool _isButtonVisible = false; //pour le bouton Plus....
+  bool _isButtonVisible = false; //pour le bouton d anvoi....
   bool _showMoreButtons = false; // afficher d autres questions possibles
-  bool _isDarkMode = false; // État pour le mode sombre
+
 
   void _updateTextField(String text) {
     setState(() {
@@ -21,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  
   @override
   void initState() {
     super.initState();
@@ -40,11 +45,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _isDarkMode? Colors.black:Colors.white,
+      backgroundColor: widget.isDarkMode? Colors.black:Colors.white,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: _isDarkMode? Colors.white:Colors.black),
+        iconTheme: IconThemeData(color:  widget.isDarkMode? Colors.white:Colors.black),
         centerTitle: true,
-        backgroundColor: _isDarkMode? Colors.black:Colors.white,
+        backgroundColor:  widget.isDarkMode? Colors.black:Colors.white,
         title: const Text(
           'TobassiChatBot',
           style: TextStyle(
@@ -55,33 +60,33 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-              icon: Icon(_isDarkMode ? Icons.dark_mode : Icons.light_mode),
+              icon: Icon( widget.isDarkMode ? Icons.dark_mode : Icons.light_mode),
               onPressed: () {
                 setState(() {
-                  _isDarkMode = !_isDarkMode; // Basculer entre clair et sombre
+                   widget.isDarkMode = ! widget.isDarkMode; // Basculer entre clair et sombre
                 });
               },
             ),
           IconButton(
-            icon: Icon(Icons.more_vert, color:_isDarkMode? Colors.white:Colors.black),
+            icon: Icon(Icons.more_vert, color: widget.isDarkMode? Colors.white:Colors.black),
             onPressed: () {},
           ),
         ],
         
       ),
       drawer: Drawer(
-        backgroundColor:_isDarkMode? Colors.black:Colors.white,       
+        backgroundColor: widget.isDarkMode? Colors.black:Colors.white,       
         child: ListView(
           children: [
             DrawerHeader(
               padding: EdgeInsets.only(top: 30,left: 12),
               decoration: BoxDecoration(
-              color:_isDarkMode? Colors.black: Colors.white,
+              color: widget.isDarkMode? Colors.black: Colors.white,
               ),
                child: Text(
                 'Menu',
                 style:TextStyle(
-                   color: _isDarkMode? Colors.white: Colors.black,
+                   color:  widget.isDarkMode? Colors.white: Colors.black,
                    fontWeight: FontWeight.bold,
                    fontSize: 34,
                 ) ,),
@@ -91,21 +96,21 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text(
                 'Profil',
                 style: TextStyle(
-                  color: _isDarkMode? Colors.white: Colors.black,
+                  color:  widget.isDarkMode? Colors.white: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),               
               ),
               subtitle:Text(
                 "Verifier les etats de vos commandes",
                 style: TextStyle(
-                  color: _isDarkMode? Colors.white: Colors.black,                 
+                  color:  widget.isDarkMode? Colors.white: Colors.black,                 
                 ),
               ),
               trailing:Icon(Icons.chevron_right),
               onTap: (){
                  Navigator.push(
                    context,
-                   MaterialPageRoute(builder: (context) => ProfileScreen( isDarkMode: _isDarkMode)),                 
+                   MaterialPageRoute(builder: (context) => ProfileScreen( isDarkMode:  widget.isDarkMode)),                 
                  );
               },
               
@@ -115,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text(
                 'Quittez',
                 style: TextStyle(
-                  color: _isDarkMode? Colors.white: Colors.black,
+                  color:  widget.isDarkMode? Colors.white: Colors.black,
                   fontWeight: FontWeight.bold,
               ),
               ),
@@ -137,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   'Comment puis-je vous aider ?',
                   style: TextStyle(
-                    color: _isDarkMode? Colors.white:Colors.black,
+                    color:  widget.isDarkMode? Colors.white:Colors.black,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                      ),               
@@ -159,8 +164,8 @@ class _HomeScreenState extends State<HomeScreen> {
                      if (!_showMoreButtons)
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _isDarkMode? Colors.black54 : Colors.white54,
-                          foregroundColor: _isDarkMode? Colors.white: Colors.black45,
+                          backgroundColor:  widget.isDarkMode? Colors.black54 : Colors.white54,
+                          foregroundColor:  widget.isDarkMode? Colors.white: Colors.black45,
                           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                         ),
                         onPressed: () {
@@ -203,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     cursorColor:  Colors.red,                  
                     decoration: InputDecoration(
                       filled: true,
-                      fillColor: _isDarkMode? Color.fromARGB(255, 48, 40, 40): Colors.grey,
+                      fillColor:  widget.isDarkMode? Color.fromARGB(255, 48, 40, 40): Colors.grey,
                       hintText: 'Message.....',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
@@ -211,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     style: TextStyle(
-                      color: _isDarkMode? Colors.white: Colors.black, // Couleur du texte
+                      color:  widget.isDarkMode? Colors.white: Colors.black, // Couleur du texte
                       fontSize: 16.4, // Taille de la police (facultatif)
                     ),
                   ),
@@ -219,11 +224,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(width: 10),
                  if (_isButtonVisible)
                 CircleAvatar(
-                  backgroundColor:_isDarkMode? Colors.white: Colors.black,
+                  backgroundColor: widget.isDarkMode? Colors.white: Colors.black,
                   foregroundColor: Colors.black54,
                   child: IconButton(
-                    icon: Icon(Icons.send, color: _isDarkMode? Colors.black:Colors.white),
-                    onPressed: () {},
+                    icon: Icon(Icons.send, color:  widget.isDarkMode? Colors.black:Colors.white),
+                    onPressed: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Chatscreen( isDarkMode:  widget.isDarkMode,text:_textController.text ,)),                 
+                 );
+                    },
                   ),
                 ),
               ],
@@ -239,8 +249,8 @@ class _HomeScreenState extends State<HomeScreen> {
     
     return ElevatedButton.icon(
       style: ElevatedButton.styleFrom(
-        backgroundColor: _isDarkMode? Colors.black54 : Colors.white54,
-        foregroundColor: _isDarkMode? Colors.white: Colors.black45,
+        backgroundColor:  widget.isDarkMode? Colors.black54 : Colors.white54,
+        foregroundColor:  widget.isDarkMode? Colors.white: Colors.black45,
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       ),
       onPressed: () {
